@@ -1,0 +1,32 @@
+$ua = http.getHeader("User-Agent");
+
+$os_windows = 'windows';
+$os_mac = 'mac';
+$os_mac_osx = 'macosx';
+$os_linus = 'linux';
+$os_solaris = 'solaris';
+$os_other = 'other';
+$os = $os_other;
+
+if (string.find("Win32", $ua) != -1 || string.find("Win64", $ua) != -1)
+  $os = $os_windows;
+else if (string.find("Linux", $ua) != -1)
+  $os = $os_linux;
+else if (string.find("Mac OS X", $ua) != -1)
+  $os = $os_macosx;
+else if (string.find("MSIE 5.2", $ua) != -1)
+  $os = $os_macosx;
+else if (string.find("Mac", $ua) != -1) {
+  $os = $os_mac;
+
+  # Special case for Opera on OS X emulating IE (bug 402113)
+  if ((string.find("Opera", $ua) != -1) && (string.find("Opera 6", $ua) ==
+-1))
+    $os = $os_macosx;
+
+} else if (string.find("SunOS", $ua) != -1)
+  $os = $os_solaris;
+else
+  $os = $os_other;
+
+http.addHeader('X-Moz-Platform', $os);
